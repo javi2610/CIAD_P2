@@ -75,7 +75,9 @@ contract MyNFT is ERC721URIStorage, Ownable, ReentrancyGuard {
         _ownedTokens[msg.sender].push(tokenId);
         _removeTokenFromOwner(seller, tokenId);
 
-        payable(seller).transfer(price);
+        // payable(seller).transfer(price);
+        (bool success, ) = payable(seller).call{value: price}("");
+        require(success, "Transfer failed");
 
         emit NFTSold(tokenId, seller, msg.sender, price);
     }
